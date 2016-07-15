@@ -9,7 +9,7 @@ import { Jsonp, URLSearchParams } from '@angular/http';
 export class BucketService {
 
   constructor(private http: Http) {}
-  private heroesUrl = 'http://localhost:9000/';  // URL to web API
+  private heroesUrl = 'http://192.168.74.75:9000/';  // URL to web API
   getHeroes () {
     return this.http.get(this.heroesUrl).map(res => res.json());
   }
