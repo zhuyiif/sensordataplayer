@@ -3,6 +3,7 @@ import { BucketService }        from './bucket.service';
 import { JSONP_PROVIDERS }  from '@angular/http';
 
 declare var Plotly: any;
+
 export class Bucket {
   CreationDate: string;
   Name: string;
@@ -167,10 +168,7 @@ export class AppComponent {
 
         Plotly.newPlot('myDiv', data);
 
-
       }
-
-
 
 
       myReader.readAsText(files[0]);
