@@ -28,6 +28,7 @@ var AppComponent = (function () {
         var _this = this;
         this.buckService = buckService;
         this.allbuckts = [];
+        this.fft = [];
         this.title = 'Tour of Buckets';
         this.buckets = MelonBuckets;
         console.log('in construnctor ');
@@ -35,10 +36,31 @@ var AppComponent = (function () {
         this.leftChannel = [];
         this.rightChannel = [];
         this.channelIndex = [];
+        this.fft = [];
         console.log(this.leftChannel);
         buckService.getHeroes().subscribe(function (res) {
             _this.allbuckts = res;
         }, null, function () { console.log(_this.allbuckts); });
+        buckService.getFFTResult().subscribe(function (res) {
+            _this.fft = res;
+        }, null, function () {
+            console.log(_this.fft);
+            var frequ = [];
+            var mag = [];
+            var i;
+            for (i = 0; i < _this.fft.length; i++) {
+                var item = _this.fft[i];
+                frequ.push(item.frequency);
+                mag.push(item.magnitude);
+            }
+            var trace1 = {
+                x: frequ,
+                y: mag,
+                type: 'scatter'
+            };
+            var data = [trace1];
+            Plotly.newPlot('fft', data);
+        });
     }
     AppComponent.prototype.onSelect = function (sbucket) {
         this.selectedHero = sbucket;
@@ -85,7 +107,7 @@ var AppComponent = (function () {
     AppComponent = __decorate([
         core_1.Component({
             selector: 'my-app',
-            template: "\n    <h1>{{title}}</h1>\n    <h2>My buckets</h2>\n    <input type=\"file\" (change)=\"fileChangeEvent($event)\" placeholder=\"Upload file...\" />\n    <button type=\"button\" (click)=\"upload()\">Upload</button>\n    <div id=\"myDiv\" style=\"width: 1000px; height: 400px;\"><!-- Plotly chart will be drawn inside this DIV --></div>\n    <ul class=\"buckets\">\n      <li *ngFor=\"let buck of allbuckts\"\n        [class.selected]=\"buck === selectedHero\"\n        (click)=\"onSelect(buck)\">\n        <span class=\"badge\">{{buck.Name}}</span> {{buck.CreationDate}}\n      </li>\n    </ul>\n    <div *ngIf=\"selectedHero\">\n      <h2>{{selectedHero.Name}} details!</h2>\n      <div><label>CreationDate: </label>{{selectedHero.CreationDate}}</div>\n      <div>\n        <label>Name: </label>\n        <input [(ngModel)]=\"selectedHero.Name\" placeholder=\"Name\"/>\n      </div>\n    </div>\n  ",
+            template: "\n    <h1>{{title}}</h1>\n    <h2>My buckets</h2>\n    <input type=\"file\" (change)=\"fileChangeEvent($event)\" placeholder=\"Upload file...\" />\n    <button type=\"button\" (click)=\"upload()\">Upload</button>\n    <div id=\"myDiv\" style=\"width: 1000px; height: 400px;\"><!-- Plotly chart will be drawn inside this DIV --></div>\n    <div id=\"fft\" style=\"width: 1000px; height: 400px;\"><!-- Plotly chart will be drawn inside this DIV --></div>\n    <ul class=\"buckets\">\n      <li *ngFor=\"let buck of allbuckts\"\n        [class.selected]=\"buck === selectedHero\"\n        (click)=\"onSelect(buck)\">\n        <span class=\"badge\">{{buck.Name}}</span> {{buck.CreationDate}}\n      </li>\n    </ul>\n    <div *ngIf=\"selectedHero\">\n      <h2>{{selectedHero.Name}} details!</h2>\n      <div><label>CreationDate: </label>{{selectedHero.CreationDate}}</div>\n      <div>\n        <label>Name: </label>\n        <input [(ngModel)]=\"selectedHero.Name\" placeholder=\"Name\"/>\n      </div>\n    </div>\n  ",
             styles: ["\n    .selected {\n      background-color: #CFD8DC !important;\n      color: white;\n    }\n    .buckets {\n      margin: 0 0 2em 0;\n      list-style-type: none;\n      padding: 0;\n      width: 15em;\n    }\n    .buckets li {\n      cursor: pointer;\n      position: relative;\n      left: 0;\n      background-color: #EEE;\n      margin: .5em;\n      padding: .3em 0;\n      height: 1.6em;\n      border-radius: 4px;\n    }\n    .buckets li.selected:hover {\n      background-color: #BBD8DC !important;\n      color: white;\n    }\n    .buckets li:hover {\n      color: #607D8B;\n      background-color: #DDD;\n      left: .1em;\n    }\n    .buckets .text {\n      position: relative;\n      top: -3px;\n    }\n    .heroes .badge {\n      display: inline-block;\n      font-size: small;\n      color: white;\n      padding: 0.8em 0.7em 0 0.7em;\n      background-color: #607D8B;\n      line-height: 1em;\n      position: relative;\n      left: -1px;\n      top: -4px;\n      height: 1.8em;\n      margin-right: .8em;\n      border-radius: 4px 0 0 4px;\n    }\n  "],
             providers: [http_1.JSONP_PROVIDERS, bucket_service_1.BucketService]
         }), 

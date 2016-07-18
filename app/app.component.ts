@@ -25,6 +25,7 @@ const MelonBuckets: Bucket[] = [
     <input type="file" (change)="fileChangeEvent($event)" placeholder="Upload file..." />
     <button type="button" (click)="upload()">Upload</button>
     <div id="myDiv" style="width: 1000px; height: 400px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+    <div id="fft" style="width: 1000px; height: 400px;"><!-- Plotly chart will be drawn inside this DIV --></div>
     <ul class="buckets">
       <li *ngFor="let buck of allbuckts"
         [class.selected]="buck === selectedHero"
@@ -99,12 +100,15 @@ export class AppComponent {
   rightChannel: any[];
   channelIndex: any[];
   filesToUpload: Array<File>;
+
+  fft = [];
   constructor(private buckService: BucketService) {
     console.log('in construnctor ');
     this.filesToUpload = [];
     this.leftChannel = [];
     this.rightChannel = [];
     this.channelIndex = [];
+    this.fft = [];
     console.log(this.leftChannel);
     buckService.getHeroes().subscribe(
       res => {
@@ -113,6 +117,36 @@ export class AppComponent {
       null,
       () => { console.log(this.allbuckts); });
 
+    buckService.getFFTResult().subscribe(
+      res => {
+        this.fft = res;
+      },
+      null,
+      () => {
+         console.log(this.fft); 
+         var frequ = [];
+         var mag = [];
+         var i;
+         for (i = 0; i < this.fft.length; i++) {
+           var item = this.fft[i];
+           frequ.push(item.frequency);
+           mag.push(item.magnitude);
+         }
+
+          var trace1 = {
+          x: frequ,
+          y: mag,
+          type: 'scatter'
+        };
+
+
+        var data = [trace1];
+
+        Plotly.newPlot('fft', data);
+
+      
+       
+    });
   }
 
   title = 'Tour of Buckets';

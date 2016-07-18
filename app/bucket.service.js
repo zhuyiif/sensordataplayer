@@ -16,9 +16,13 @@ var BucketService = (function () {
     function BucketService(http) {
         this.http = http;
         this.heroesUrl = 'http://192.168.1.113:9000/'; // URL to web API
+        this.channelDataUrl = 'http://192.168.1.113:9000/bucket/test_data/2016-07-14-070606-0700-dOff+heady-power-v2rev.txt';
     }
     BucketService.prototype.getHeroes = function () {
         return this.http.get(this.heroesUrl).map(function (res) { return res.json(); });
+    };
+    BucketService.prototype.getFFTResult = function () {
+        return this.http.get(this.channelDataUrl).map(function (res) { return res.json(); });
     };
     BucketService.prototype.handleError = function (error) {
         // In a real world app, we might use a remote logging infrastructure

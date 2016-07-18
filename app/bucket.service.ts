@@ -14,6 +14,12 @@ export class BucketService {
     return this.http.get(this.heroesUrl).map(res => res.json());
   }
 
+  private channelDataUrl = 'http://192.168.1.113:9000/bucket/test_data/2016-07-14-070606-0700-dOff+heady-power-v2rev.txt';
+
+
+  getFFTResult () {
+    return this.http.get(this.channelDataUrl).map(res => res.json());
+  }
   private handleError (error: any) {
     // In a real world app, we might use a remote logging infrastructure
     // We'd also dig deeper into the error to get a better message

@@ -49,7 +49,7 @@ router.get('/bucket/:key*', function (req, res) {
   res.setHeader('Content-Type', 'application/json');
 
 
-  res.json(req.params.key + req.param(0));
+ // res.json(req.params.key + req.param(0));
 
   var params = { Bucket: 'unprocessed-research-data', Key: req.params.key + req.param(0) };
   var file = require('fs').createWriteStream('./file.txt');
@@ -96,6 +96,7 @@ router.get('/bucket/:key*', function (req, res) {
 
     console.log(both);
 
+   res.json(both);
   });
 
   //   var readstream = s3.getObject(params).createReadStream();
