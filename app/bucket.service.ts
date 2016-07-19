@@ -19,7 +19,7 @@ export class BucketService {
 
   getFFTResult (filepath : any) {
     var url = this.heroesUrl+ filepath;
-    return this.http.get(this.channelDataUrl).map(res => res.json());
+    return this.http.get(url).map(res => res.json());
   }
   private handleError (error: any) {
     // In a real world app, we might use a remote logging infrastructure

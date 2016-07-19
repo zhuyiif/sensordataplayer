@@ -23,7 +23,7 @@ var BucketService = (function () {
     };
     BucketService.prototype.getFFTResult = function (filepath) {
         var url = this.heroesUrl + filepath;
-        return this.http.get(this.channelDataUrl).map(function (res) { return res.json(); });
+        return this.http.get(url).map(function (res) { return res.json(); });
     };
     BucketService.prototype.handleError = function (error) {
         // In a real world app, we might use a remote logging infrastructure

@@ -44,7 +44,18 @@ var AppComponent = (function () {
         buckService.getHeroes().subscribe(function (res) {
             _this.allbuckts = res;
         }, null, function () { console.log(_this.allbuckts); });
-        buckService.getFFTResult('bucket/test_data/2016-07-14-070606-0700-dOff+heady-power-v2rev.txt').subscribe(function (res) {
+    }
+    AppComponent.prototype.onSelect = function (sbucket) {
+        this.selectedHero = sbucket;
+    };
+    AppComponent.prototype.upload = function () {
+        this.makeFileRequest("", [], this.filesToUpload);
+    };
+    AppComponent.prototype.submitFile = function () {
+        var _this = this;
+        console.log(this.bucketAndKey);
+        //unprocessed-research-data/test_data/2016-07-14-070606-0700-dOff+heady-power-v2rev.txt
+        this.buckService.getFFTResult(this.bucketAndKey).subscribe(function (res) {
             _this.fft = res.frequency;
             _this.rawdata = res.leftChannel;
         }, null, function () {
@@ -71,15 +82,6 @@ var AppComponent = (function () {
             var dataraw = [traceraw];
             Plotly.newPlot('myDiv', dataraw);
         });
-    }
-    AppComponent.prototype.onSelect = function (sbucket) {
-        this.selectedHero = sbucket;
-    };
-    AppComponent.prototype.upload = function () {
-        this.makeFileRequest("", [], this.filesToUpload);
-    };
-    AppComponent.prototype.submitFile = function () {
-        console.log(this.bucketAndKey);
     };
     AppComponent.prototype.fileChangeEvent = function (fileInput) {
         this.filesToUpload = fileInput.target.files;

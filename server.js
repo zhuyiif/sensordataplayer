@@ -44,14 +44,17 @@ router.get('/', function (req, res) {
 
 var fs = require('fs');
 
-router.get('/bucket/:key*', function (req, res) {
+router.get('/:bucket/:key*', function (req, res) {
   console.log("about page");
   res.setHeader('Content-Type', 'application/json');
 
 
+ console.log(req.params.bucket);
+ console.log(req.params.key);
+
  // res.json(req.params.key + req.param(0));
 
-  var params = { Bucket: 'unprocessed-research-data', Key: req.params.key + req.param(0) };
+  var params = { Bucket: req.params.bucket, Key: req.params.key + req.param(0) };
   var file = require('fs').createWriteStream('./file.txt');
 
 
@@ -82,7 +85,7 @@ router.get('/bucket/:key*', function (req, res) {
     var channelNumber1 = channel2Array.map(function(item) {
     return parseInt(item, 10);
     });
-    
+
     console.log(channelNumber);
     var fft = require('fft-js').fft,
       fftUtil = require('fft-js').util,

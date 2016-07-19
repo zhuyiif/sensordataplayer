@@ -127,7 +127,24 @@ export class AppComponent {
       null,
       () => { console.log(this.allbuckts); });
 
-    buckService.getFFTResult('bucket/test_data/2016-07-14-070606-0700-dOff+heady-power-v2rev.txt').subscribe(
+
+  }
+
+  title = 'Tour of Buckets';
+  buckets = MelonBuckets;
+  selectedHero: Bucket;
+  onSelect(sbucket: Bucket) {
+    this.selectedHero = sbucket;
+  }
+
+  upload() {
+    this.makeFileRequest("", [], this.filesToUpload);
+  }
+
+  submitFile() {
+    console.log(this.bucketAndKey);
+    //unprocessed-research-data/test_data/2016-07-14-070606-0700-dOff+heady-power-v2rev.txt
+        this.buckService.getFFTResult(this.bucketAndKey).subscribe(
       res => {
         this.fft = res.frequency;
         this.rawdata = res.leftChannel;
@@ -170,21 +187,6 @@ export class AppComponent {
 
        
     });
-  }
-
-  title = 'Tour of Buckets';
-  buckets = MelonBuckets;
-  selectedHero: Bucket;
-  onSelect(sbucket: Bucket) {
-    this.selectedHero = sbucket;
-  }
-
-  upload() {
-    this.makeFileRequest("", [], this.filesToUpload);
-  }
-
-  submitFile() {
-    console.log(this.bucketAndKey);
     
   }
   fileChangeEvent(fileInput: any) {
