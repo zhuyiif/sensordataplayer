@@ -44,7 +44,7 @@ var AppComponent = (function () {
         buckService.getHeroes().subscribe(function (res) {
             _this.allbuckts = res;
         }, null, function () { console.log(_this.allbuckts); });
-        buckService.getFFTResult().subscribe(function (res) {
+        buckService.getFFTResult('bucket/test_data/2016-07-14-070606-0700-dOff+heady-power-v2rev.txt').subscribe(function (res) {
             _this.fft = res.frequency;
             _this.rawdata = res.leftChannel;
         }, null, function () {

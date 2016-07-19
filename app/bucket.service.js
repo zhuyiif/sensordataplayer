@@ -21,7 +21,8 @@ var BucketService = (function () {
     BucketService.prototype.getHeroes = function () {
         return this.http.get(this.heroesUrl).map(function (res) { return res.json(); });
     };
-    BucketService.prototype.getFFTResult = function () {
+    BucketService.prototype.getFFTResult = function (filepath) {
+        var url = this.heroesUrl + filepath;
         return this.http.get(this.channelDataUrl).map(function (res) { return res.json(); });
     };
     BucketService.prototype.handleError = function (error) {

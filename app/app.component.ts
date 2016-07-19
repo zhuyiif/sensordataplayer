@@ -127,7 +127,7 @@ export class AppComponent {
       null,
       () => { console.log(this.allbuckts); });
 
-    buckService.getFFTResult().subscribe(
+    buckService.getFFTResult('bucket/test_data/2016-07-14-070606-0700-dOff+heady-power-v2rev.txt').subscribe(
       res => {
         this.fft = res.frequency;
         this.rawdata = res.leftChannel;
