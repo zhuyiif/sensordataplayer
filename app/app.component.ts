@@ -22,6 +22,12 @@ const MelonBuckets: Bucket[] = [
   template: `
     <h1>{{title}}</h1>
     <h2>My buckets</h2>
+     <div>
+        <label>FilePath: </label>
+        <input [(ngModel)]="bucketAndKey" placeholder="FilePath" (ngModelChange)="textChange($event)"/>
+        <button type="button" (click)="submitFile()">Submit</button>
+      </div>
+
     <input type="file" (change)="fileChangeEvent($event)" placeholder="Upload file..." />
     <button type="button" (click)="upload()">Upload</button>
     <div id="myDiv" style="width: 1000px; height: 400px;"><!-- Plotly chart will be drawn inside this DIV --></div>
@@ -103,6 +109,8 @@ export class AppComponent {
 
   fft = [];
   rawdata = [];
+
+  bucketAndKey = '';
   constructor(private buckService: BucketService) {
     console.log('in construnctor ');
     this.filesToUpload = [];
@@ -111,7 +119,7 @@ export class AppComponent {
     this.channelIndex = [];
     this.fft = [];
     this.rawdata = [];
-    console.log(this.leftChannel);
+    this.bucketAndKey = '';
     buckService.getHeroes().subscribe(
       res => {
         this.allbuckts = res;
@@ -173,13 +181,20 @@ export class AppComponent {
 
   upload() {
     this.makeFileRequest("", [], this.filesToUpload);
-
-
   }
 
+  submitFile() {
+    console.log(this.bucketAndKey);
+    
+  }
   fileChangeEvent(fileInput: any) {
     this.filesToUpload = <Array<File>>fileInput.target.files;
   }
+
+  textChange(textEvent: any) {
+  
+  }
+
   makeFileRequest(url: string, params: Array<string>, files: Array<File>) {
     var formData: any = new FormData();
     for (var i = 0; i < files.length; i++) {
