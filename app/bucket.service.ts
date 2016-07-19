@@ -9,12 +9,12 @@ import { Jsonp, URLSearchParams } from '@angular/http';
 export class BucketService {
 
   constructor(private http: Http) {}
-  private heroesUrl = 'http://192.168.1.113:9000/';  // URL to web API
+  private heroesUrl = 'http://192.168.74.241:9000/';  // URL to web API
   getHeroes () {
     return this.http.get(this.heroesUrl).map(res => res.json());
   }
 
-  private channelDataUrl = 'http://192.168.1.113:9000/bucket/test_data/2016-07-14-070606-0700-dOff+heady-power-v2rev.txt';
+  private channelDataUrl = 'http://192.168.74.241:9000/bucket/test_data/2016-07-14-070606-0700-dOff+heady-power-v2rev.txt';
 
 
   getFFTResult () {

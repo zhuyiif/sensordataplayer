@@ -72,14 +72,17 @@ router.get('/bucket/:key*', function (req, res) {
 
       }
 
-       //console.log(channel1Array);
-      // console.log(channel2Array);
+
     }
 
     var channelNumber = channel1Array.map(function(item) {
     return parseInt(item, 10);
     });
 
+    var channelNumber1 = channel2Array.map(function(item) {
+    return parseInt(item, 10);
+    });
+    
     console.log(channelNumber);
     var fft = require('fft-js').fft,
       fftUtil = require('fft-js').util,
@@ -90,13 +93,19 @@ router.get('/bucket/:key*', function (req, res) {
     var frequencies = fftUtil.fftFreq(phasors, 256), // Sample rate and coef is just used for length, and frequency step
       magnitudes = fftUtil.fftMag(phasors);
 
+
+    var jsonObj = {frequency:[] , leftChannel:[]};
+
     var both = frequencies.map(function (f, ix) {
       return { frequency: f, magnitude: magnitudes[ix] };
     });
 
-    console.log(both);
+    jsonObj.frequency = both;
+    jsonObj.leftChannel = channelNumber;
 
-   res.json(both);
+    console.log(jsonObj);
+
+   res.json(jsonObj);
   });
 
   //   var readstream = s3.getObject(params).createReadStream();

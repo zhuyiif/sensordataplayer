@@ -29,6 +29,7 @@ var AppComponent = (function () {
         this.buckService = buckService;
         this.allbuckts = [];
         this.fft = [];
+        this.rawdata = [];
         this.title = 'Tour of Buckets';
         this.buckets = MelonBuckets;
         console.log('in construnctor ');
@@ -37,14 +38,15 @@ var AppComponent = (function () {
         this.rightChannel = [];
         this.channelIndex = [];
         this.fft = [];
+        this.rawdata = [];
         console.log(this.leftChannel);
         buckService.getHeroes().subscribe(function (res) {
             _this.allbuckts = res;
         }, null, function () { console.log(_this.allbuckts); });
         buckService.getFFTResult().subscribe(function (res) {
-            _this.fft = res;
+            _this.fft = res.frequency;
+            _this.rawdata = res.leftChannel;
         }, null, function () {
-            console.log(_this.fft);
             var frequ = [];
             var mag = [];
             var i;
@@ -60,6 +62,13 @@ var AppComponent = (function () {
             };
             var data = [trace1];
             Plotly.newPlot('fft', data);
+            var traceraw = {
+                x: Array.from(Array(500).keys()),
+                y: _this.rawdata.slice(0, 500),
+                type: 'scatter'
+            };
+            var dataraw = [traceraw];
+            Plotly.newPlot('myDiv', dataraw);
         });
     }
     AppComponent.prototype.onSelect = function (sbucket) {

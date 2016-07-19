@@ -102,6 +102,7 @@ export class AppComponent {
   filesToUpload: Array<File>;
 
   fft = [];
+  rawdata = [];
   constructor(private buckService: BucketService) {
     console.log('in construnctor ');
     this.filesToUpload = [];
@@ -109,6 +110,7 @@ export class AppComponent {
     this.rightChannel = [];
     this.channelIndex = [];
     this.fft = [];
+    this.rawdata = [];
     console.log(this.leftChannel);
     buckService.getHeroes().subscribe(
       res => {
@@ -119,11 +121,12 @@ export class AppComponent {
 
     buckService.getFFTResult().subscribe(
       res => {
-        this.fft = res;
+        this.fft = res.frequency;
+        this.rawdata = res.leftChannel;
       },
       null,
       () => {
-         console.log(this.fft); 
+        
          var frequ = [];
          var mag = [];
          var i;
@@ -145,6 +148,18 @@ export class AppComponent {
         Plotly.newPlot('fft', data);
 
       
+      var traceraw = {
+          x: Array.from(Array(500).keys()),
+          y: this.rawdata.slice(0, 500),
+          type: 'scatter'
+        };
+
+ 
+
+        var dataraw = [traceraw];
+
+        Plotly.newPlot('myDiv', dataraw);
+
        
     });
   }
