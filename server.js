@@ -127,6 +127,16 @@ router.get('/:bucket/:key*', function (req, res) {
   // });
 });
 
+
+router.get('/upload', function (req, res) {
+  res.setHeader('Content-Type', 'application/json');
+  res.json({x:'1',y:'2'});
+
+
+});
+
+
+
 module.exports = router;
 
 app.use('/', router);
