@@ -2,6 +2,9 @@ import { Component } from '@angular/core';
 import { BucketService }        from './bucket.service';
 import { JSONP_PROVIDERS }  from '@angular/http';
 
+import {CORE_DIRECTIVES, FORM_DIRECTIVES, NgClass, NgStyle} from '@angular/common';
+
+
 declare var Plotly: any;
 
 export class Bucket {
@@ -20,6 +23,15 @@ const MelonBuckets: Bucket[] = [
 @Component({
   selector: 'my-app',
   template: `
+
+  <style>
+    .my-drop-zone { border: dotted 3px lightgray; }
+    .nv-file-over { border: dotted 3px red; } /* Default class applied to drop zones on over */
+    .another-file-over-class { border: dotted 3px green; }
+
+    html, body { height: 100%; }
+</style>
+
     <h1>{{title}}</h1>
     <h2>My buckets</h2>
      <div>
@@ -27,6 +39,10 @@ const MelonBuckets: Bucket[] = [
         <input [(ngModel)]="bucketAndKey" placeholder="FilePath" (ngModelChange)="textChange($event)"/>
         <button type="button" (click)="submitFile()">Submit</button>
       </div>
+
+
+
+
 
     <input type="file" (change)="fileChangeEvent($event)" placeholder="Upload file..." />
     <button type="button" (click)="upload()">Upload</button>
@@ -144,24 +160,24 @@ export class AppComponent {
   submitFile() {
     console.log(this.bucketAndKey);
     //unprocessed-research-data/test_data/2016-07-14-070606-0700-dOff+heady-power-v2rev.txt
-        this.buckService.getFFTResult(this.bucketAndKey).subscribe(
+    this.buckService.getFFTResult(this.bucketAndKey).subscribe(
       res => {
         this.fft = res.frequency;
         this.rawdata = res.leftChannel;
       },
       null,
       () => {
-        
-         var frequ = [];
-         var mag = [];
-         var i;
-         for (i = 0; i < this.fft.length; i++) {
-           var item = this.fft[i];
-           frequ.push(item.frequency);
-           mag.push(item.magnitude);
-         }
 
-          var trace1 = {
+        var frequ = [];
+        var mag = [];
+        var i;
+        for (i = 0; i < this.fft.length; i++) {
+          var item = this.fft[i];
+          frequ.push(item.frequency);
+          mag.push(item.magnitude);
+        }
+
+        var trace1 = {
           x: frequ,
           y: mag,
           type: 'scatter'
@@ -172,29 +188,29 @@ export class AppComponent {
 
         Plotly.newPlot('fft', data);
 
-      
-      var traceraw = {
+
+        var traceraw = {
           x: Array.from(Array(500).keys()),
           y: this.rawdata.slice(0, 500),
           type: 'scatter'
         };
 
- 
+
 
         var dataraw = [traceraw];
 
         Plotly.newPlot('myDiv', dataraw);
 
-       
-    });
-    
+
+      });
+
   }
   fileChangeEvent(fileInput: any) {
     this.filesToUpload = <Array<File>>fileInput.target.files;
   }
 
   textChange(textEvent: any) {
-  
+
   }
 
   makeFileRequest(url: string, params: Array<string>, files: Array<File>) {

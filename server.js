@@ -20,12 +20,15 @@ s3.listBuckets(function (err, data) {
 
 
 app.use(function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', '192.168.74.75');
+  res.header('Access-Control-Allow-Origin', '192.168.74.241');
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Methods', 'POST');
+  res.setHeader('Access-Control-Allow-Credentials', true);
+
   next();
 });
 
