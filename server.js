@@ -18,16 +18,17 @@ s3.listBuckets(function (err, data) {
 });
 
 
+var fileUpload = require('express-fileupload');
+app.use(fileUpload());
+
+var multer  = require('multer');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', '192.168.74.241');
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  res.header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
-  res.setHeader('Access-Control-Allow-Methods', 'POST');
-  res.setHeader('Access-Control-Allow-Credentials', true);
 
   next();
 });
@@ -131,12 +132,30 @@ router.get('/:bucket/:key*', function (req, res) {
 });
 
 
-router.get('/upload', function (req, res) {
-  res.setHeader('Content-Type', 'application/json');
-  res.json({x:'1',y:'2'});
+// app.post('/upload', multer({dest: "./uploads/"}).array("uploads[]", 12), function(req, res) {
+
+// console.log(req.body);
+
+// });
+// router.post('/upload', multer({dest: "./uploads/"}).array("uploads[]", 12), function(req, res) {
 
 
-});
+//     sampleFile = req.files;
+
+//     console.log(req);
+
+// });
+var upload = multer({ dest: 'uploads/' });
+app.post('/upload', upload.single('sample'), function (req, res, next) {
+  // req.file is the `avatar` file
+  // req.body will hold the text fields, if there were any
+  console.log(req.files.sample);
+
+  var content = req.files.sample.data.toString('utf-8');
+  console.log(content);
+  
+
+})
 
 
 

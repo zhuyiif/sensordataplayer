@@ -3,7 +3,7 @@ import { BucketService }        from './bucket.service';
 import { JSONP_PROVIDERS }  from '@angular/http';
 
 import {CORE_DIRECTIVES, FORM_DIRECTIVES, NgClass, NgStyle} from '@angular/common';
-
+import { FormBuilder, Validators } from '@angular/common';
 
 declare var Plotly: any;
 
@@ -44,8 +44,12 @@ const MelonBuckets: Bucket[] = [
 
 
 
-    <input type="file" (change)="fileChangeEvent($event)" placeholder="Upload file..." />
-    <button type="button" (click)="upload()">Upload</button>
+    <form [ngFormModel]="uploadForm" (submit)="doUpload($event)">
+    <input ngControl="file" name="sample" type="file" (change)="fileChangeEvent($event)">
+    <input ngControl="email" type="email" placeholder="Your email">
+  <button type="submit">upload</button>
+</form>
+
     <div id="myDiv" style="width: 1000px; height: 400px;"><!-- Plotly chart will be drawn inside this DIV --></div>
     <div id="fft" style="width: 1000px; height: 400px;"><!-- Plotly chart will be drawn inside this DIV --></div>
     <ul class="buckets">
@@ -127,7 +131,9 @@ export class AppComponent {
   rawdata = [];
 
   bucketAndKey = '';
-  constructor(private buckService: BucketService) {
+
+  uploadForm ;
+  constructor(private buckService: BucketService, fb: FormBuilder) {
     console.log('in construnctor ');
     this.filesToUpload = [];
     this.leftChannel = [];
@@ -136,6 +142,10 @@ export class AppComponent {
     this.fft = [];
     this.rawdata = [];
     this.bucketAndKey = '';
+    this.uploadForm = fb.group({
+      file: ["", Validators.required],
+      email:["", Validators.required]
+    });
     buckService.getHeroes().subscribe(
       res => {
         this.allbuckts = res;
@@ -154,7 +164,7 @@ export class AppComponent {
   }
 
   upload() {
-    this.makeFileRequest("", [], this.filesToUpload);
+    this.makeFileRequest("http://192.168.74.241:9000/upload", [], this.filesToUpload);
   }
 
   submitFile() {
@@ -207,55 +217,63 @@ export class AppComponent {
   }
   fileChangeEvent(fileInput: any) {
     this.filesToUpload = <Array<File>>fileInput.target.files;
+   // console.log(this.filesToUpload);
+  }
+
+  onChange(fileInput: any) {
+   // this.filesToUpload = <Array<File>>fileInput.target.files;
+   console.log(fileInput.target.files);
+   
   }
 
   textChange(textEvent: any) {
 
   }
 
-  makeFileRequest(url: string, params: Array<string>, files: Array<File>) {
-    var formData: any = new FormData();
-    for (var i = 0; i < files.length; i++) {
-      formData.append("uploads[]", files[i], files[i].name);
-      console.log(files[i]);
+  makeFileRequest(url: string, params: Array<string>, files: Array<File>) : Promise<any> {
+    
+return new Promise((resolve, reject) => {
+
+            console.log('tsdgsdfg');
+            var formData: any = new FormData();
+            var xhr = new XMLHttpRequest();
+          
+            for(var i = 0; i < files.length; i++) {
+                formData.append("sample", files[i], files[i].name);
+            }
+            console.log('33333');
+            
+            
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) {
+                    if (xhr.status == 200) {
+                        resolve(JSON.parse(xhr.response));
+                    } else {
+                        reject(xhr.response);
+                    }
+
+                }
+
+              
+            }
+            xhr.open("POST", url, true);
+
+            //xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+          // xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.send(formData);
+            console.log('testest zack');
+            console.log(formData.get('uploads[]'));
+
+            
+        });
     }
 
-    if (files.length > 0) {
-      var myReader: FileReader = new FileReader();
 
-      var self = this;
-      myReader.onloadend = function (e) {
-        var lines = myReader.result.split("\n");
-        lines.forEach(function (element, index, array) {
-          var lineitem: any[] = element.split(/(\s+)/);
-          self.leftChannel.push(lineitem[4]);
-          self.rightChannel.push(lineitem[6]);
-          self.channelIndex.push(lineitem[0]);
-        }, self);
-
-
-        var trace1 = {
-          x: self.channelIndex.slice(0, 500),
-          y: self.leftChannel.slice(0, 500),
-          type: 'scatter'
-        };
-
-        var trace2 = {
-          x: self.channelIndex.slice(0, 500),
-          y: self.rightChannel.slice(0, 500),
-          type: 'scatter'
-        };
-
-        var data = [trace1, trace2];
-
-        Plotly.newPlot('myDiv', data);
-
-      }
-
-
-      myReader.readAsText(files[0]);
-
-    }
-
+   doUpload(event) {
+     var email = this.uploadForm.controls.file.value;
+    this.makeFileRequest("http://192.168.74.241:9000/upload", [], this.filesToUpload);
+    console.log('testest zack1');
+    console.log(this.filesToUpload);
+    event.preventDefault();
   }
 }
