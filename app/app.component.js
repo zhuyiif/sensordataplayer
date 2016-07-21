@@ -110,9 +110,36 @@ var AppComponent = (function () {
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == 4) {
                     if (xhr.status == 200) {
+                        var xres = JSON.parse(xhr.response);
+                        this.fft = xres.frequency;
+                        this.rawdata = xres.leftChannel;
+                        console.log(this.fft);
+                        var frequ = [];
+                        var mag = [];
+                        var i;
+                        for (i = 0; i < this.fft.length; i++) {
+                            var item = this.fft[i];
+                            frequ.push(item.frequency);
+                            mag.push(item.magnitude);
+                        }
+                        var trace1 = {
+                            x: frequ,
+                            y: mag,
+                            type: 'scatter'
+                        };
+                        var data = [trace1];
+                        Plotly.newPlot('fft', data);
+                        var traceraw = {
+                            x: Array.from(Array(500).keys()),
+                            y: this.rawdata.slice(0, 500),
+                            type: 'scatter'
+                        };
+                        var dataraw = [traceraw];
+                        Plotly.newPlot('myDiv', dataraw);
                         resolve(JSON.parse(xhr.response));
                     }
                     else {
+                        console.log(JSON.parse(xhr.response));
                         reject(xhr.response);
                     }
                 }
@@ -121,8 +148,6 @@ var AppComponent = (function () {
             //xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
             // xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
             xhr.send(formData);
-            console.log('testest zack');
-            console.log(formData.get('uploads[]'));
         });
     };
     AppComponent.prototype.doUpload = function (event) {

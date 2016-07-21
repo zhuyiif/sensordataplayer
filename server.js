@@ -150,10 +150,51 @@ app.post('/upload', upload.single('sample'), function (req, res, next) {
   // req.file is the `avatar` file
   // req.body will hold the text fields, if there were any
   console.log(req.files.sample);
-
   var content = req.files.sample.data.toString('utf-8');
-  console.log(content);
-  
+
+   var lineArray = content.split(/\r\n|\n|\r/);
+
+  var channel1Array = [];
+  var channel2Array = [];
+
+   for (i = 0; i < lineArray.length; i++) {
+        var itemArray = lineArray[i].split('\t');
+        channel1Array.push(itemArray[2]);
+        channel2Array.push(itemArray[3]);
+
+      }
+
+       var channelNumber = channel1Array.map(function(item) {
+    return parseInt(item, 10);
+    });
+
+    var channelNumber1 = channel2Array.map(function(item) {
+    return parseInt(item, 10);
+    });
+
+   
+    var fft = require('fft-js').fft,
+      fftUtil = require('fft-js').util,
+      signal = channelNumber.slice(0,256);
+
+    var phasors = fft(signal);
+
+    var frequencies = fftUtil.fftFreq(phasors, 256), // Sample rate and coef is just used for length, and frequency step
+      magnitudes = fftUtil.fftMag(phasors);
+
+
+    var jsonObj = {frequency:[] , leftChannel:[]};
+
+    var both = frequencies.map(function (f, ix) {
+      return { frequency: f, magnitude: magnitudes[ix] };
+    });
+
+    jsonObj.frequency = both;
+    jsonObj.leftChannel = channelNumber;
+
+    console.log(jsonObj);
+
+    res.json(jsonObj);
 
 })
 
